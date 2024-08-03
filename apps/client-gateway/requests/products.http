@@ -1,0 +1,34 @@
+@url=http://localhost:3000/api/products
+
+### Get all products
+GET {{ url }}?page=1&limit=3
+
+### Get Product By Id 
+GET {{ url }}/9
+
+### Create product
+POST {{ url }}
+Content-Type: application/json
+
+{
+    "name": "Phone",
+    "price": "1500"
+}
+
+### Update product
+PATCH {{ url }}/9
+Content-Type: application/json
+
+{
+    "name": "Teclado Mejorado",
+    "price": "76.4"
+}
+
+### Delete product
+DELETE  {{ url }}/54
+Content-Type: application/json
+
+{
+    "name": "Teclado Mejorado",
+    "price": "76.4"
+}

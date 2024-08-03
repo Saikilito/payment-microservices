@@ -1,0 +1,37 @@
+@url=http://localhost:3000/api/orders
+
+### Get all orders
+GET {{ url }}
+
+### Get Orders By Status
+GET {{ url }}/status/PENDING?page=1&limit=2
+
+### Get Order By Id 
+GET {{ url }}/017b78b5-d60e-45ec-ab2d-3f9225ff9ddb
+
+### Create Order
+POST {{ url }}
+Content-Type: application/json
+
+{
+    "items":[
+        {
+            "productId": 1,
+            "price": "100",
+            "quantity": 3
+        },
+        {
+            "productId": 2,
+            "price": "100",
+            "quantity": 1
+        }
+    ]
+}
+
+### Create Order
+PATCH {{ url }}/1952882e-a6f3-4c3f-9b9b-277728fddf19
+Content-Type: application/json
+
+{
+    "status": "CANCELLEDD"
+}
