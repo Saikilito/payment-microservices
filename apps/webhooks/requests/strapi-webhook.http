@@ -1,0 +1,34 @@
+@url=http://localhost:3003/api/stripe
+
+
+### Sucess
+GET {{ url }}/success
+
+### Cancel
+GET {{ url }}/cancell
+
+### Create Session
+POST {{ url }}/create-session
+Content-Type: application/json
+
+{
+    "orderId": "xyz",
+    "currency": "usd",
+    "items": [
+        {
+            "name": "T-Shirt",
+            "price": 15,
+            "quantity": 1
+        },
+        {
+            "name": "Mouse",
+            "price": 7,
+            "quantity": 2
+        }
+    ]
+}
+
+### Webhook
+POST {{ url }}/webhook
+
+

@@ -1,5 +1,5 @@
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { CONSTANTS } from '@nms/shared';
+import { CONSTANTS } from '@pay-ms/shared';
 
 export const makeTCPModule = (
   key: keyof typeof CONSTANTS.KEY_MICROSERVICES_SERVICES,

@@ -3,7 +3,7 @@ import { RpcException } from '@nestjs/microservices';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { DefaultArgs } from '@prisma/products/runtime/library';
 
-import { Core, Modules } from '@nms/nest-modules';
+import { Core, Modules } from '@pay-ms/nest-modules';
 
 type PaginationDTO = Core.DTO.PaginationDTO;
 

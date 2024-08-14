@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 
-import { Core } from '@nms/nest-modules';
+import { Core } from '@pay-ms/nest-modules';
 import { OrdersController } from './orders.controller';
 import { envs } from '../../config';
 

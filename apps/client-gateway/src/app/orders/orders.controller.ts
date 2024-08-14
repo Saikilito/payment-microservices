@@ -12,8 +12,8 @@ import {
 import { catchError } from 'rxjs';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 
-import { CONSTANTS } from '@nms/shared';
-import { Core } from '@nms/nest-modules';
+import { CONSTANTS } from '@pay-ms/shared';
+import { Core } from '@pay-ms/nest-modules';
 
 type PaginationDTO = Core.DTO.PaginationDTO;
 

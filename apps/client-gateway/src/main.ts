@@ -1,7 +1,7 @@
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
-import { Core } from '@nms/nest-modules';
+import { Core } from '@pay-ms/nest-modules';
 
 import { envs } from './config';
 import { AppModule } from './app/app.module';

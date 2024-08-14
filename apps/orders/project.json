@@ -21,6 +21,12 @@
           "buildTarget": "orders:build:production"
         }
       }
+    },
+    "prisma:generate": {
+      "command": "npx prisma generate --schema=./apps/orders/src/prisma/schema.prisma"
+    },
+    "prisma:migrate": {
+      "command": "npx prisma migrate dev --schema=./apps/orders/src/prisma/schema.prisma"
     }
   }
 }

@@ -1,22 +1,25 @@
-import { Prisma, OrderStatus } from '@prisma/orders';
-import { Product } from '@prisma/products';
-import { HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { ClientProxy, RpcException } from '@nestjs/microservices';
-import { DefaultArgs } from '@prisma/orders/runtime/library';
-
-import { CONSTANTS } from '@nms/shared';
-import { Core, Modules } from '@nms/nest-modules';
 import { firstValueFrom } from 'rxjs';
+import { Product } from '@prisma/products';
+import { Prisma, OrderStatus } from '@prisma/orders';
+import { DefaultArgs } from '@prisma/orders/runtime/library';
+import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
+import { ClientProxy, RpcException } from '@nestjs/microservices';
+
+import { CONSTANTS } from '@pay-ms/shared';
+import { Core, Modules } from '@pay-ms/nest-modules';
+
+import { OrderWithProduct } from './models/index.type';
 
 const { PrismaOrdersService } = Modules.Prisma;
-
 type PrismaOrdersService = Modules.Prisma.PrismaOrdersService;
 
 const { TCP_EVENTS, KEY_MICROSERVICES_SERVICES } = CONSTANTS;
 
 @Injectable()
 export class OrderService {
+  private readonly logger = new Logger(OrderService.name);
   private readonly repository: Prisma.OrderDelegate<DefaultArgs>;
+
   constructor(
     @Inject(KEY_MICROSERVICES_SERVICES.NATS_SERVICE)
     private readonly natsClient: ClientProxy,
@@ -34,6 +37,10 @@ export class OrderService {
           { ids: productIds }
         )
       );
+
+      if (!products) {
+        throw new RpcException('Products not found');
+      }
 
       const totalAmount = createOrderDto.items.reduce((acc, curr) => {
         const product = products.find(
@@ -161,6 +168,42 @@ export class OrderService {
     return this.repository.update({
       where: { id },
       data: { status },
+    });
+  }
+
+  async createPaymentSession(order: OrderWithProduct) {
+    const paymentSession = await firstValueFrom(
+      this.natsClient.send('create.payment.session', {
+        orderId: order.id,
+        currency: 'usd',
+        items: order.orderItem.map((item) => ({
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+        })),
+      })
+    );
+    return paymentSession;
+  }
+
+  async changeOrderAsPaid(paidOrderDTO: Core.DTO.Orders.PaidOrderDTO) {
+    this.logger.log('Order PAID');
+    this.logger.log(paidOrderDTO);
+
+    return await this.repository.update({
+      where: { id: paidOrderDTO.orderId },
+      data: {
+        status: OrderStatus.PAID,
+        paid: true,
+        paidAt: new Date(),
+        stripeChargeId: paidOrderDTO.stripePaymentId,
+
+        OrderReceipt: {
+          create: {
+            receiptUrl: paidOrderDTO.receiptUrl,
+          },
+        },
+      },
     });
   }
 }

@@ -1,8 +1,8 @@
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { Controller, ParseIntPipe } from '@nestjs/common';
 
-import { CONSTANTS } from '@nms/shared';
-import { Core } from '@nms/nest-modules';
+import { CONSTANTS } from '@pay-ms/shared';
+import { Core } from '@pay-ms/nest-modules';
 
 import { ProductService } from './product.service';
 

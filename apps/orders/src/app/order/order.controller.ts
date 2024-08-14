@@ -1,8 +1,8 @@
 import { Controller } from '@nestjs/common';
-import { MessagePattern, Payload } from '@nestjs/microservices';
+import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
 
-import { CONSTANTS } from '@nms/shared';
-import { Core } from '@nms/nest-modules';
+import { CONSTANTS } from '@pay-ms/shared';
+import { Core } from '@pay-ms/nest-modules';
 
 import { OrderService } from './order.service';
 
@@ -13,8 +13,14 @@ export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
   @MessagePattern({ cmd: TCP_EVENTS.ORDER.CREATE })
-  create(@Payload() createOrderDto: Core.DTO.Orders.CreateOrderDto) {
-    return this.orderService.create(createOrderDto);
+  async create(@Payload() createOrderDto: Core.DTO.Orders.CreateOrderDto) {
+    const order = await this.orderService.create(createOrderDto);
+    const paymentSession = await this.orderService.createPaymentSession(order);
+
+    return {
+      order,
+      paymentSession,
+    };
   }
 
   @MessagePattern({ cmd: TCP_EVENTS.ORDER.FIND_ALL })
@@ -38,5 +44,11 @@ export class OrderController {
       updateOrderDto.id,
       updateOrderDto.status
     );
+  }
+
+  // TODO: event to const
+  @EventPattern('payment.succeeded')
+  async payOrder(@Payload() paidOrderDTO: Core.DTO.Orders.PaidOrderDTO) {
+    return await this.orderService.changeOrderAsPaid(paidOrderDTO);
   }
 }

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 
-import { Core, Modules } from '@nms/nest-modules';
+import { Core, Modules } from '@pay-ms/nest-modules';
 
 import { envs } from '../../config';
 import { OrderService } from './order.service';

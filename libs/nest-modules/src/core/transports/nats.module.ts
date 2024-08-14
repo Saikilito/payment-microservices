@@ -5,7 +5,7 @@ import {
   Transport,
 } from '@nestjs/microservices';
 
-import { CONSTANTS } from '@nms/shared';
+import { CONSTANTS } from '@pay-ms/shared';
 
 export const makeNatsConfig = (natsServers: string[]): MicroserviceOptions => ({
   transport: Transport.NATS,

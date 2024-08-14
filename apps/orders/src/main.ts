@@ -4,7 +4,7 @@ import { MicroserviceOptions } from '@nestjs/microservices';
 
 import { envs } from './config';
 import { AppModule } from './app/app.module';
-import { Core } from '@nms/nest-modules';
+import { Core } from '@pay-ms/nest-modules';
 
 async function bootstrap() {
   const logger = new Logger('OrdersMicroservice');

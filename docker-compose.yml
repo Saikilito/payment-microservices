@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  orders-db:
+    container_name: orders-db
+    image: postgres:16.2
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: 'orders'
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'postgres'
+
+  nats-server:
+    container_name: nats-server
+    image: nats:latest
+    ports:
+      - 8222:8222
+      - 6222:6222
+      - 4222:4222
