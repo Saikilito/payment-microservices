@@ -13,7 +13,7 @@ import { OrderWithProduct } from './models/index.type';
 const { PrismaOrdersService } = Modules.Prisma;
 type PrismaOrdersService = Modules.Prisma.PrismaOrdersService;
 
-const { TCP_EVENTS, KEY_MICROSERVICES_SERVICES } = CONSTANTS;
+const { EVENT_MESSAGES, KEY_MICROSERVICES_SERVICES } = CONSTANTS;
 
 @Injectable()
 export class OrderService {
@@ -33,7 +33,7 @@ export class OrderService {
       const productIds = createOrderDto.items.map((item) => item.productId);
       const products: Product[] = await firstValueFrom(
         this.natsClient.send(
-          { cmd: TCP_EVENTS.PRODUCT.VALIDATE },
+          { cmd: EVENT_MESSAGES.PRODUCT.VALIDATE },
           { ids: productIds }
         )
       );
@@ -137,7 +137,7 @@ export class OrderService {
     const productIds = data.orderItem.map((item) => item.productId);
     const products: Product[] = await firstValueFrom(
       this.natsClient.send(
-        { cmd: TCP_EVENTS.PRODUCT.VALIDATE },
+        { cmd: EVENT_MESSAGES.PRODUCT.VALIDATE },
         { ids: productIds }
       )
     );

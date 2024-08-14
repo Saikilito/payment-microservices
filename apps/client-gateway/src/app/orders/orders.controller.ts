@@ -17,7 +17,7 @@ import { Core } from '@pay-ms/nest-modules';
 
 type PaginationDTO = Core.DTO.PaginationDTO;
 
-const { TCP_EVENTS, KEY_MICROSERVICES_SERVICES } = CONSTANTS;
+const { EVENT_MESSAGES, KEY_MICROSERVICES_SERVICES } = CONSTANTS;
 
 @Controller('orders')
 export class OrdersController {
@@ -29,7 +29,7 @@ export class OrdersController {
   @Post()
   create(@Body() createOrderDto: Core.DTO.Orders.CreateOrderDto) {
     return this.orderClient.send(
-      { cmd: TCP_EVENTS.ORDER.CREATE },
+      { cmd: EVENT_MESSAGES.ORDER.CREATE },
       createOrderDto
     );
   }
@@ -37,7 +37,7 @@ export class OrdersController {
   @Get()
   findAll(@Query() paginationDto: Core.DTO.Orders.OrderPaginationDTO) {
     return this.orderClient.send(
-      { cmd: TCP_EVENTS.ORDER.FIND_ALL },
+      { cmd: EVENT_MESSAGES.ORDER.FIND_ALL },
       paginationDto
     );
   }
@@ -45,7 +45,7 @@ export class OrdersController {
   @Get(':id')
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.orderClient
-      .send({ cmd: TCP_EVENTS.ORDER.FIND_ONE }, { id })
+      .send({ cmd: EVENT_MESSAGES.ORDER.FIND_ONE }, { id })
       .pipe(
         catchError((err) => {
           throw new RpcException(err);
@@ -59,7 +59,10 @@ export class OrdersController {
     @Query() paginationDTO: PaginationDTO
   ) {
     return this.orderClient
-      .send({ cmd: TCP_EVENTS.ORDER.FIND_ALL }, { status, ...paginationDTO })
+      .send(
+        { cmd: EVENT_MESSAGES.ORDER.FIND_ALL },
+        { status, ...paginationDTO }
+      )
       .pipe(
         catchError((err) => {
           throw new RpcException(err);
@@ -73,7 +76,7 @@ export class OrdersController {
     @Body('status') status: Core.DTO.Orders.StatusDTO
   ) {
     return this.orderClient
-      .send({ cmd: TCP_EVENTS.ORDER.UPDATE_STATUS }, { id, status })
+      .send({ cmd: EVENT_MESSAGES.ORDER.UPDATE_STATUS }, { id, status })
       .pipe(
         catchError((err) => {
           throw new RpcException(err);

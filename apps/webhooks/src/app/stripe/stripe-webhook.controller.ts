@@ -1,8 +1,11 @@
+import { CONSTANTS } from '@pay-ms/shared';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 import { Controller, Get, Post, Request, Response } from '@nestjs/common';
-import { StripeWebhookService } from './stripe-webhook.service';
 
 import { StripeSessionDTO } from './dto/create-session.dto';
-import { MessagePattern, Payload } from '@nestjs/microservices';
+import { StripeWebhookService } from './stripe-webhook.service';
+
+const { EVENT_MESSAGES } = CONSTANTS;
 
 @Controller('stripe')
 export class StripeWebhookController {
@@ -18,8 +21,7 @@ export class StripeWebhookController {
     return this.paymentService.cancel();
   }
 
-  // TODO: Change to Constant
-  @MessagePattern('create.payment.session')
+  @MessagePattern(EVENT_MESSAGES.PAYMENT.SESSION)
   createSession(@Payload() createSession: StripeSessionDTO) {
     return this.paymentService.createSession(createSession);
   }

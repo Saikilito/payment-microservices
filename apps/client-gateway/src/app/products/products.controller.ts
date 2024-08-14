@@ -16,7 +16,7 @@ import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { CONSTANTS } from '@pay-ms/shared';
 import { Core } from '@pay-ms/nest-modules';
 
-const { TCP_EVENTS, KEY_MICROSERVICES_SERVICES } = CONSTANTS;
+const { EVENT_MESSAGES, KEY_MICROSERVICES_SERVICES } = CONSTANTS;
 
 @Controller('products')
 export class ProductsController {
@@ -28,7 +28,7 @@ export class ProductsController {
   @Post()
   create(@Body() createProductDto: Core.DTO.Products.CreateProductDto) {
     return this.natsClient.send(
-      { cmd: TCP_EVENTS.PRODUCT.CREATE },
+      { cmd: EVENT_MESSAGES.PRODUCT.CREATE },
       createProductDto
     );
   }
@@ -36,7 +36,7 @@ export class ProductsController {
   @Get()
   findAll(@Query() paginationDto: Core.DTO.PaginationDTO) {
     return this.natsClient.send(
-      { cmd: TCP_EVENTS.PRODUCT.FIND_ALL },
+      { cmd: EVENT_MESSAGES.PRODUCT.FIND_ALL },
       paginationDto
     );
   }
@@ -44,7 +44,7 @@ export class ProductsController {
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.natsClient
-      .send({ cmd: TCP_EVENTS.PRODUCT.FIND_ONE }, { id })
+      .send({ cmd: EVENT_MESSAGES.PRODUCT.FIND_ONE }, { id })
       .pipe(
         catchError((err) => {
           throw new RpcException(err);
@@ -58,7 +58,7 @@ export class ProductsController {
     @Body() updateProductDto: Omit<Core.DTO.Products.UpdateProductDto, 'id'>
   ) {
     return this.natsClient.send(
-      { cmd: TCP_EVENTS.PRODUCT.UPDATE },
+      { cmd: EVENT_MESSAGES.PRODUCT.UPDATE },
       {
         id,
         ...updateProductDto,
@@ -68,6 +68,6 @@ export class ProductsController {
 
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number) {
-    return this.natsClient.send({ cmd: TCP_EVENTS.PRODUCT.DELETE }, { id });
+    return this.natsClient.send({ cmd: EVENT_MESSAGES.PRODUCT.DELETE }, { id });
   }
 }
