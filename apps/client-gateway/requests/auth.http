@@ -1,0 +1,10 @@
+@url=http://localhost:3000/api/auth
+
+### POST Register User
+POST {{ url }}/register
+
+### POST Login User
+POST {{ url }}/login
+
+### GET Verify Token
+GET {{ url }}/verify

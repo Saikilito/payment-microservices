@@ -4,6 +4,7 @@ import { NestFactory } from '@nestjs/core';
 import { envs } from './config';
 import { AppModule } from './app/app.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { Core } from '@pay-ms/nest-modules';
 
 async function bootstrap() {
   const logger = new Logger('WebhooksMicroservice');
@@ -22,17 +23,12 @@ async function bootstrap() {
     })
   );
 
-  app.connectMicroservice<MicroserviceOptions>(
-    {
-      transport: Transport.NATS,
-      options: {
-        servers: envs.natsServers,
-      },
-    },
-    {
-      inheritAppConfig: true,
-    }
-  );
+  const { makeNatsConfig } = Core.Transports;
+  const NatsConfig = makeNatsConfig(envs.natsServers);
+
+  app.connectMicroservice<MicroserviceOptions>(NatsConfig, {
+    inheritAppConfig: true,
+  });
 
   await app.startAllMicroservices();
 
