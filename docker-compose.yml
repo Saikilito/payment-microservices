@@ -1,6 +1,14 @@
 version: '3'
 
 services:
+  nats-server:
+    container_name: nats-server
+    image: nats:latest
+    ports:
+      - 8222:8222
+      - 6222:6222
+      - 4222:4222
+
   orders-db:
     container_name: orders-db
     image: postgres:16.2
@@ -13,10 +21,13 @@ services:
       POSTGRES_USER: 'postgres'
       POSTGRES_PASSWORD: 'postgres'
 
-  nats-server:
-    container_name: nats-server
-    image: nats:latest
+  auth-db:
+    container_name: auth-db
+    image: mongo:6
     ports:
-      - 8222:8222
-      - 6222:6222
-      - 4222:4222
+      - '27017:27017'
+    environment:
+      MONGO_INITDB_USERNAME: root
+      MONGO_INITDB_PASSWORD: root
+    volumes:
+      - ./mongo:/data/db

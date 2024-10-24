@@ -48,3 +48,4 @@ dev.db
 dev.db-journal
 migration.sql
 /postgres
+/mongo

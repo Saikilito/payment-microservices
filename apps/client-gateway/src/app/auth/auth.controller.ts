@@ -1,7 +1,7 @@
-import { Get, Post, Inject, Controller } from '@nestjs/common';
-
 import { ClientProxy } from '@nestjs/microservices';
+import { Get, Post, Inject, Controller, Body } from '@nestjs/common';
 
+import { Core } from '@pay-ms/nest-modules';
 import { CONSTANTS } from '@pay-ms/shared';
 
 const { EVENT_MESSAGES, KEY_MICROSERVICES_SERVICES } = CONSTANTS;
@@ -14,17 +14,17 @@ export class AuthController {
   ) {}
 
   @Post('register')
-  register() {
-    return this.natsClient.send(EVENT_MESSAGES.AUTH.REGISTER, {});
+  register(@Body() registerDTO: Core.DTO.Auth.RegisterDTO) {
+    return this.natsClient.send(EVENT_MESSAGES.AUTH.REGISTER, registerDTO);
   }
 
   @Post('login')
-  login() {
-    return this.natsClient.send(EVENT_MESSAGES.AUTH.LOGIN, {});
+  login(@Body() loginDTO: Core.DTO.Auth.LoginDTO) {
+    return this.natsClient.send(EVENT_MESSAGES.AUTH.LOGIN, loginDTO);
   }
 
   @Get('verify')
   verifyUser() {
-    return this.natsClient.send(EVENT_MESSAGES.AUTH.VERIFY, {});
+    return this.natsClient.send(EVENT_MESSAGES.AUTH.LOGIN, {});
   }
 }

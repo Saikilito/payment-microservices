@@ -8,8 +8,6 @@ import { envs } from './config';
 import { AppModule } from './app/app.module';
 
 async function bootstrap() {
-  const logger = new Logger('AuthMicroservice');
-
   const { makeNatsConfig } = Core.Transports;
   const NatsConfig = makeNatsConfig(envs.natsServers);
 
@@ -27,7 +25,7 @@ async function bootstrap() {
   );
 
   await app.listen();
-  logger.log(`🚀 Auth Microservice is running on port ${envs.port}`);
+  Logger.log(`[Auth Microservice] ::: 🚀🚀🚀 is running`);
 }
 
 bootstrap();

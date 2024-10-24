@@ -1,10 +1,28 @@
 @url=http://localhost:3000/api/auth
+@authToken= {{login.response.body.$.token}}
 
-### POST Register User
+### Register User
 POST {{ url }}/register
+Content-Type: application/json
 
-### POST Login User
+{
+    "name": "Kembert Nieves",
+    "email": "knieves@gmail.com",
+    "password": "ll1234_55678Añ"
+}
+
+### Login User
+# @name login
 POST {{ url }}/login
+Content-Type: application/json
 
-### GET Verify Token
-GET {{ url }}/verify
+{
+    "email": "knieves@gmail.com",
+    "password": "ll1234_55678Añ"
+}
+
+### Verify user token
+GET {{ url }}/verify-token
+Content-Type: application/json
+Authorization: bearer {{authToken}}
+

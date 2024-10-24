@@ -1,13 +1,13 @@
-import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { Logger, ValidationPipe } from '@nestjs/common';
+import { MicroserviceOptions } from '@nestjs/microservices';
+
+import { Core } from '@pay-ms/nest-modules';
 
 import { envs } from './config';
 import { AppModule } from './app/app.module';
-import { MicroserviceOptions, Transport } from '@nestjs/microservices';
-import { Core } from '@pay-ms/nest-modules';
 
 async function bootstrap() {
-  const logger = new Logger('WebhooksMicroservice');
   const app = await NestFactory.create(AppModule, {
     rawBody: true,
   });
@@ -33,7 +33,7 @@ async function bootstrap() {
   await app.startAllMicroservices();
 
   await app.listen(envs.port);
-  logger.log(`🚀 Webhook Microservice is running on port: ${envs.port}`);
+  Logger.log(`[Webhooks Microservice] ::: 🚀🚀🚀 is running`);
 }
 
 bootstrap();

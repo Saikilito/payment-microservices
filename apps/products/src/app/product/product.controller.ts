@@ -8,38 +8,38 @@ import { ProductService } from './product.service';
 
 type PaginationDTO = Core.DTO.PaginationDTO;
 
-const { TCP_EVENTS } = CONSTANTS;
+const { EVENT_MESSAGES } = CONSTANTS;
 
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
-  @MessagePattern({ cmd: TCP_EVENTS.PRODUCT.CREATE })
+  @MessagePattern({ cmd: EVENT_MESSAGES.PRODUCT.CREATE })
   create(@Payload() createProductDto: Core.DTO.Products.CreateProductDto) {
     return this.productService.create(createProductDto);
   }
 
-  @MessagePattern({ cmd: TCP_EVENTS.PRODUCT.FIND_ALL })
+  @MessagePattern({ cmd: EVENT_MESSAGES.PRODUCT.FIND_ALL })
   findAll(@Payload() paginationDTO: PaginationDTO) {
     return this.productService.findAll(paginationDTO);
   }
 
-  @MessagePattern({ cmd: TCP_EVENTS.PRODUCT.FIND_ONE })
+  @MessagePattern({ cmd: EVENT_MESSAGES.PRODUCT.FIND_ONE })
   findOne(@Payload('id', ParseIntPipe) id: number) {
     return this.productService.findOne(id);
   }
 
-  @MessagePattern({ cmd: TCP_EVENTS.PRODUCT.UPDATE })
+  @MessagePattern({ cmd: EVENT_MESSAGES.PRODUCT.UPDATE })
   update(@Payload() updateProductDto: Core.DTO.Products.UpdateProductDto) {
     return this.productService.update(updateProductDto.id, updateProductDto);
   }
 
-  @MessagePattern({ cmd: TCP_EVENTS.PRODUCT.DELETE })
+  @MessagePattern({ cmd: EVENT_MESSAGES.PRODUCT.DELETE })
   remove(@Payload('id') id: string) {
     return this.productService.remove(+id);
   }
 
-  @MessagePattern({ cmd: TCP_EVENTS.PRODUCT.VALIDATE })
+  @MessagePattern({ cmd: EVENT_MESSAGES.PRODUCT.VALIDATE })
   validateProduct(@Payload('ids') ids: number[]) {
     return this.productService.validateProducts(ids);
   }

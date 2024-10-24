@@ -7,7 +7,6 @@ import { envs } from './config';
 import { AppModule } from './app/app.module';
 
 async function bootstrap() {
-  const logger = new Logger('ClientGateway');
   const app = await NestFactory.create(AppModule);
 
   const globalPrefix = 'api';
@@ -25,8 +24,8 @@ async function bootstrap() {
 
   await app.listen(envs.port);
 
-  logger.log(
-    `🚀 Application is running on: http://localhost:${envs.port}/${globalPrefix}`
+  Logger.log(
+    `[Client Gateway] ::: 🚀🚀🚀 is running on: http://localhost:${envs.port}/${globalPrefix}`
   );
 }
 
