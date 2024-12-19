@@ -1,0 +1,49 @@
+# Builder
+FROM node:21-alpine3.19 AS builder
+
+ARG PROJECT_NAME
+ARG PRODUCTS_DATABASE
+ARG ORDERS_DATABASE
+
+ENV PRODUCTS_DATABASE_URL=$PRODUCTS_DATABASE
+ENV ORDERS_DATABASE_URL=$ORDERS_DATABASE
+
+WORKDIR /app
+
+RUN echo "PRODUCT_DATABASE_URL: $PRODUCTS_DATABASE_URL" && sleep 10
+
+COPY . .
+
+RUN npm install -g nx
+RUN npm ci -f --only-production 
+RUN if [ -f "apps/$PROJECT_NAME/src/prisma/schema.prisma" ]; then \
+      npx prisma migrate deploy --schema=apps/$PROJECT_NAME/src/prisma/schema.prisma; \
+    else \
+      echo "No schema.prisma found for $PROJECT_NAME, skipping migrations"; \
+    fi
+RUN npm run generate:prisma
+RUN npm cache clean --force
+
+ENV NX_CACHE_DIRECTORY=/app/.nx/cache
+RUN nx reset
+RUN nx build $PROJECT_NAME --prod
+
+# Image
+FROM node:21-alpine3.19
+
+ARG PROJECT_NAME
+
+WORKDIR /app
+
+COPY --from=builder /app/dist/apps/$PROJECT_NAME /app/$PROJECT_NAME
+COPY --from=builder /app/dist/libs /app/libs
+
+COPY package*.json ./
+COPY --from=builder /app/node_modules /app/node_modules
+
+ENV NODE_ENV=production
+ENV PROJECT_NAME=$PROJECT_NAME
+
+EXPOSE 3000
+
+CMD sh -c "node /app/$PROJECT_NAME/main.js"

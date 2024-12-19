@@ -8,8 +8,6 @@ import { envs } from './config';
 import { AppModule } from './app/app.module';
 
 async function bootstrap() {
-  const logger = new Logger('ProductMicroservice');
-
   const { makeNatsConfig } = Core.Transports;
   const NatsConfig = makeNatsConfig(envs.natsServers);
 

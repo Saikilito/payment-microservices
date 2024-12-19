@@ -49,3 +49,4 @@ dev.db-journal
 migration.sql
 /postgres
 /mongo
+pm.json

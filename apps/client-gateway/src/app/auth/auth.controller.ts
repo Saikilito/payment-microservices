@@ -1,8 +1,9 @@
-import { ClientProxy } from '@nestjs/microservices';
+import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { Get, Post, Inject, Controller, Body } from '@nestjs/common';
 
 import { Core } from '@pay-ms/nest-modules';
 import { CONSTANTS } from '@pay-ms/shared';
+import { catchError } from 'rxjs';
 
 const { EVENT_MESSAGES, KEY_MICROSERVICES_SERVICES } = CONSTANTS;
 
@@ -15,7 +16,11 @@ export class AuthController {
 
   @Post('register')
   register(@Body() registerDTO: Core.DTO.Auth.RegisterDTO) {
-    return this.natsClient.send(EVENT_MESSAGES.AUTH.REGISTER, registerDTO);
+    return this.natsClient.send(EVENT_MESSAGES.AUTH.REGISTER, registerDTO).pipe(
+      catchError((err) => {
+        throw new RpcException(err);
+      })
+    );
   }
 
   @Post('login')

@@ -12,17 +12,17 @@ const { EVENT_MESSAGES } = CONSTANTS;
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @MessagePattern({ cmd: EVENT_MESSAGES.AUTH.REGISTER })
+  @MessagePattern(EVENT_MESSAGES.AUTH.REGISTER)
   registerUser(@Payload() registerDto: Core.DTO.Auth.RegisterDTO) {
     return this.authService.register(registerDto);
   }
 
-  @MessagePattern({ cmd: EVENT_MESSAGES.AUTH.LOGIN })
+  @MessagePattern(EVENT_MESSAGES.AUTH.LOGIN)
   loginUser(@Payload() loginDto: Core.DTO.Auth.LoginDTO) {
     return this.authService.login(loginDto);
   }
 
-  @MessagePattern({ cmd: EVENT_MESSAGES.AUTH.VERIFY_TOKEN })
+  @MessagePattern(EVENT_MESSAGES.AUTH.VERIFY_TOKEN)
   verifyToken(@Payload('token') token: string) {
     return this.authService.verifyToken(token);
   }
