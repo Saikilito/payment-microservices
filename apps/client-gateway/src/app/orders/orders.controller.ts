@@ -28,29 +28,33 @@ export class OrdersController {
 
   @Post()
   create(@Body() createOrderDto: Core.DTO.Orders.CreateOrderDto) {
-    return this.orderClient.send(
-      { cmd: EVENT_MESSAGES.ORDER.CREATE },
-      createOrderDto
-    );
-  }
-
-  @Get()
-  findAll(@Query() paginationDto: Core.DTO.Orders.OrderPaginationDTO) {
-    return this.orderClient.send(
-      { cmd: EVENT_MESSAGES.ORDER.FIND_ALL },
-      paginationDto
-    );
-  }
-
-  @Get(':id')
-  findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.orderClient
-      .send({ cmd: EVENT_MESSAGES.ORDER.FIND_ONE }, { id })
+      .send(EVENT_MESSAGES.ORDER.CREATE, createOrderDto)
       .pipe(
         catchError((err) => {
           throw new RpcException(err);
         })
       );
+  }
+
+  @Get()
+  findAll(@Query() paginationDto: Core.DTO.Orders.OrderPaginationDTO) {
+    return this.orderClient
+      .send(EVENT_MESSAGES.ORDER.FIND_ALL, paginationDto)
+      .pipe(
+        catchError((err) => {
+          throw new RpcException(err);
+        })
+      );
+  }
+
+  @Get(':id')
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
+    return this.orderClient.send(EVENT_MESSAGES.ORDER.FIND_ONE, { id }).pipe(
+      catchError((err) => {
+        throw new RpcException(err);
+      })
+    );
   }
 
   @Get('status/:status')
@@ -59,10 +63,7 @@ export class OrdersController {
     @Query() paginationDTO: PaginationDTO
   ) {
     return this.orderClient
-      .send(
-        { cmd: EVENT_MESSAGES.ORDER.FIND_ALL },
-        { status, ...paginationDTO }
-      )
+      .send(EVENT_MESSAGES.ORDER.FIND_ALL, { status, ...paginationDTO })
       .pipe(
         catchError((err) => {
           throw new RpcException(err);
@@ -76,7 +77,7 @@ export class OrdersController {
     @Body('status') status: Core.DTO.Orders.StatusDTO
   ) {
     return this.orderClient
-      .send({ cmd: EVENT_MESSAGES.ORDER.UPDATE_STATUS }, { id, status })
+      .send(EVENT_MESSAGES.ORDER.UPDATE_STATUS, { id, status })
       .pipe(
         catchError((err) => {
           throw new RpcException(err);

@@ -32,10 +32,9 @@ export class OrderService {
     try {
       const productIds = createOrderDto.items.map((item) => item.productId);
       const products: Product[] = await firstValueFrom(
-        this.natsClient.send(
-          { cmd: EVENT_MESSAGES.PRODUCT.VALIDATE },
-          { ids: productIds }
-        )
+        this.natsClient.send(EVENT_MESSAGES.PRODUCT.VALIDATE, {
+          ids: productIds,
+        })
       );
 
       if (!products) {
@@ -136,10 +135,7 @@ export class OrderService {
 
     const productIds = data.orderItem.map((item) => item.productId);
     const products: Product[] = await firstValueFrom(
-      this.natsClient.send(
-        { cmd: EVENT_MESSAGES.PRODUCT.VALIDATE },
-        { ids: productIds }
-      )
+      this.natsClient.send(EVENT_MESSAGES.PRODUCT.VALIDATE, { ids: productIds })
     );
 
     if (!data) {

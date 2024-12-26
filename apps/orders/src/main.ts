@@ -7,8 +7,6 @@ import { AppModule } from './app/app.module';
 import { Core } from '@pay-ms/nest-modules';
 
 async function bootstrap() {
-  const logger = new Logger('OrdersMicroservice');
-
   const { makeNatsConfig } = Core.Transports;
   const NatsConfig = makeNatsConfig(envs.natsServers);
 
