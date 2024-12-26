@@ -28,28 +28,23 @@ export class ProductsController {
   @Post()
   create(@Body() createProductDto: Core.DTO.Products.CreateProductDto) {
     return this.natsClient.send(
-      { cmd: EVENT_MESSAGES.PRODUCT.CREATE },
+      EVENT_MESSAGES.PRODUCT.CREATE,
       createProductDto
     );
   }
 
   @Get()
   findAll(@Query() paginationDto: Core.DTO.PaginationDTO) {
-    return this.natsClient.send(
-      { cmd: EVENT_MESSAGES.PRODUCT.FIND_ALL },
-      paginationDto
-    );
+    return this.natsClient.send(EVENT_MESSAGES.PRODUCT.FIND_ALL, paginationDto);
   }
 
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.natsClient
-      .send({ cmd: EVENT_MESSAGES.PRODUCT.FIND_ONE }, { id })
-      .pipe(
-        catchError((err) => {
-          throw new RpcException(err);
-        })
-      );
+    return this.natsClient.send(EVENT_MESSAGES.PRODUCT.FIND_ONE, { id }).pipe(
+      catchError((err) => {
+        throw new RpcException(err);
+      })
+    );
   }
 
   @Patch(':id')
@@ -57,17 +52,14 @@ export class ProductsController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updateProductDto: Omit<Core.DTO.Products.UpdateProductDto, 'id'>
   ) {
-    return this.natsClient.send(
-      { cmd: EVENT_MESSAGES.PRODUCT.UPDATE },
-      {
-        id,
-        ...updateProductDto,
-      }
-    );
+    return this.natsClient.send(EVENT_MESSAGES.PRODUCT.UPDATE, {
+      id,
+      ...updateProductDto,
+    });
   }
 
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number) {
-    return this.natsClient.send({ cmd: EVENT_MESSAGES.PRODUCT.DELETE }, { id });
+    return this.natsClient.send(EVENT_MESSAGES.PRODUCT.DELETE, { id });
   }
 }

@@ -2,31 +2,44 @@
 FROM node:21-alpine3.19 AS builder
 
 ARG PROJECT_NAME
-ARG PRODUCTS_DATABASE
-ARG ORDERS_DATABASE
 
-ENV PRODUCTS_DATABASE_URL=$PRODUCTS_DATABASE
+ARG ORDERS_DATABASE
 ENV ORDERS_DATABASE_URL=$ORDERS_DATABASE
+
+ARG PRODUCTS_DATABASE
+ENV PRODUCTS_DATABASE_URL=$PRODUCTS_DATABASE
+
+ARG AUTH_DATABASE
+ENV AUTH_DATABASE_URL=$AUTH_DATABASE
 
 WORKDIR /app
 
-RUN echo "PRODUCT_DATABASE_URL: $PRODUCTS_DATABASE_URL" && sleep 10
-
-COPY . .
+COPY package*.json ./
 
 RUN npm install -g nx
 RUN npm ci -f --only-production 
+
+COPY . .
+
+RUN npm run generate:prisma
+
 RUN if [ -f "apps/$PROJECT_NAME/src/prisma/schema.prisma" ]; then \
-      npx prisma migrate deploy --schema=apps/$PROJECT_NAME/src/prisma/schema.prisma; \
+      DB_PROVIDER=$(awk '/^datasource/{p=1;next} p&&/provider/{print $3;exit}' "apps/$PROJECT_NAME/src/prisma/schema.prisma" | tr -d '"'); \
+      echo "Detected database provider: $DB_PROVIDER"; \
+      if [ "$DB_PROVIDER" = "mongodb" ]; then \
+        echo "MongoDB detected, not running prisma migration"; \
+      else \
+        npx prisma migrate deploy --schema=apps/$PROJECT_NAME/src/prisma/schema.prisma; \
+      fi; \
     else \
       echo "No schema.prisma found for $PROJECT_NAME, skipping migrations"; \
     fi
-RUN npm run generate:prisma
-RUN npm cache clean --force
 
 ENV NX_CACHE_DIRECTORY=/app/.nx/cache
 RUN nx reset
+
 RUN nx build $PROJECT_NAME --prod
+RUN npm cache clean --force
 
 # Image
 FROM node:21-alpine3.19
@@ -35,8 +48,23 @@ ARG PROJECT_NAME
 
 WORKDIR /app
 
-COPY --from=builder /app/dist/apps/$PROJECT_NAME /app/$PROJECT_NAME
+COPY --from=builder /app/dist/apps/$PROJECT_NAME /app/$PROJECT_NAME 
 COPY --from=builder /app/dist/libs /app/libs
+
+
+COPY --from=builder /app/apps /app/builder/apps
+
+RUN echo '#!/bin/sh' > /app/setup.sh && \
+    echo 'if [ -d "/app/builder/apps/$PROJECT_NAME/src/prisma" ]; then' >> /app/setup.sh && \
+    echo '  mkdir -p /app/apps/$PROJECT_NAME/src/prisma' >> /app/setup.sh && \
+    echo '  cp -r /app/builder/apps/$PROJECT_NAME/src/prisma/* /app/apps/$PROJECT_NAME/src/prisma/' >> /app/setup.sh && \
+    echo 'else' >> /app/setup.sh && \
+    echo '  echo "No prisma directory found for $PROJECT_NAME"' >> /app/setup.sh && \
+    echo 'fi' >> /app/setup.sh && \
+    chmod +x /app/setup.sh
+
+RUN /app/setup.sh
+RUN rm -rf /app/builder /app/setup.sh
 
 COPY package*.json ./
 COPY --from=builder /app/node_modules /app/node_modules

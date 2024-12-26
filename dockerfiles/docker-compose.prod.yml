@@ -12,16 +12,19 @@ services:
     env_file:
       # - ../apps/client-gateway/.env
       - .env
-  # auth:
-  #   image: us-east4-docker.pkg.dev/payment-microservices/image-registry/auth
-  #   build:
-  #     context: ../
-  #     dockerfile: ./dockerfiles/Dockerfile.prod
-  #     args:
-  #       PROJECT_NAME: 'auth'
-  #   env_file:
-  #     # - ../apps/auth/.env
-  #     - ../.env
+  auth-ms:
+    image: auth-ms
+    build:
+      context: ../
+      dockerfile: ./dockerfiles/Dockerfile.prod
+      labels:
+        - 'auth-ms:latest'
+      args:
+        PROJECT_NAME: 'auth'
+        AUTH_DATABASE: ${AUTH_DATABASE_URL}
+    env_file:
+      # - ../apps/auth/.env
+      - .env
   products-ms:
     image: products-ms
     build:
@@ -35,24 +38,28 @@ services:
     env_file:
       # - ../apps/products/.env
       - .env
-  # orders:
-  #   image: us-east4-docker.pkg.dev/payment-microservices/image-registry/orders
-  #   build:
-  #     context: ../
-  #     dockerfile: ./dockerfiles/Dockerfile.prod
-  #     args:
-  #       PROJECT_NAME: orders
-  #       ORDERS_DATABASE: ${ORDERS_DATABASE_URL}
-  #   env_file:
-  #     # - ../apps/orders/.env
-  #     - ../.env
-  # webhooks:
-  #   image: us-east4-docker.pkg.dev/payment-microservices/image-registry/webhook
-  #   build:
-  #     context: ../
-  #     dockerfile: ./dockerfiles/Dockerfile.prod
-  #     args:
-  #       PROJECT_NAME: 'webhooks'
-  #   env_file:
-  #     # - ../apps/webhooks/.env
-  #     - ../.env
+  orders-ms:
+    image: orders-ms
+    build:
+      context: ../
+      dockerfile: ./dockerfiles/Dockerfile.prod
+      labels:
+        - 'orders-ms:latest'
+      args:
+        PROJECT_NAME: 'orders'
+        ORDERS_DATABASE: ${ORDERS_DATABASE_URL}
+    env_file:
+      # - ../apps/orders/.env
+      - .env
+  webhooks-ms:
+    image: webhooks-ms
+    build:
+      context: ../
+      dockerfile: ./dockerfiles/Dockerfile.prod
+      labels:
+        - 'webhooks-ms:latest'
+      args:
+        PROJECT_NAME: 'webhooks'
+    env_file:
+      # - ../apps/webhooks/.env
+      - .env
