@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: products-ms
+  name: products-ms
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: products-ms
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: products-ms
+    spec:
+      containers:
+        - image: us-east4-docker.pkg.dev/payment-microservices/image-registry/products-ms
+          name: products-ms
+          env:
+            - name: PORT
+              value: '3000'
+            - name: NATS_SERVERS
+              value: 'nats://nats'
+            - name: PRODUCTS_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: products-secrets
+                  key: database_url
+            - name: ORDERS_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: orders-secrets
+                  key: database_url
+          resources: {}
+status: {}

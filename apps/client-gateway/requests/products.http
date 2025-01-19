@@ -1,4 +1,4 @@
-@url=http://localhost:3000/api/products
+@url=http://localhost:31236/api/products
 
 ### Get all products
 GET {{ url }}?page=1&limit=3

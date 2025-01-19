@@ -1,4 +1,4 @@
-@url=http://localhost:3000/api/orders
+@url=http://localhost:31236/api/orders
 
 ### Get all orders
 GET {{ url }}

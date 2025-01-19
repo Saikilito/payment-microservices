@@ -10,7 +10,6 @@ services:
       args:
         PROJECT_NAME: client-gateway
     env_file:
-      # - ../apps/client-gateway/.env
       - .env
   auth-ms:
     image: auth-ms
@@ -23,7 +22,6 @@ services:
         PROJECT_NAME: 'auth'
         AUTH_DATABASE: ${AUTH_DATABASE_URL}
     env_file:
-      # - ../apps/auth/.env
       - .env
   products-ms:
     image: products-ms
@@ -36,7 +34,6 @@ services:
         PROJECT_NAME: 'products'
         PRODUCTS_DATABASE: ${PRODUCTS_DATABASE_URL}
     env_file:
-      # - ../apps/products/.env
       - .env
   orders-ms:
     image: orders-ms
@@ -49,7 +46,6 @@ services:
         PROJECT_NAME: 'orders'
         ORDERS_DATABASE: ${ORDERS_DATABASE_URL}
     env_file:
-      # - ../apps/orders/.env
       - .env
   webhooks-ms:
     image: webhooks-ms
@@ -61,5 +57,4 @@ services:
       args:
         PROJECT_NAME: 'webhooks'
     env_file:
-      # - ../apps/webhooks/.env
       - .env

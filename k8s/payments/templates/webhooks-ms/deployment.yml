@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: webhooks-ms
+  name: webhooks-ms
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webhooks-ms
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: webhooks-ms
+    spec:
+      containers:
+        - image: us-east4-docker.pkg.dev/payment-microservices/image-registry/webhooks-ms
+          name: webhooks-ms
+          env:
+            - name: PORT
+              value: '3000'
+            - name: NATS_SERVERS
+              value: 'nats://nats'
+            - name: STRIPE_SECRET
+              secretKeyRef:
+                name: webhooks-ms
+                value: stripe_secret
+            - name: STRIPE_ENDPOINT_SECRET
+              secretKeyRef:
+                name: webhooks-ms
+                value: stripe_endpoint_secret
+            - name: STRIPE_SUCCESS_URL
+              secretKeyRef:
+                name: webhooks-ms
+                value: stripe_success_url
+            - name: STRIPE_CANCEL_URL
+              secretKeyRef:
+                name: webhooks-ms
+                value: stripe_cancel_url
+          resources: {}
+status: {}

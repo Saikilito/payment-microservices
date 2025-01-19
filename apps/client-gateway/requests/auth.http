@@ -1,4 +1,4 @@
-@url=http://localhost:3000/api/auth
+@url=http://localhost:31236/api/auth
 @authToken= {{login.response.body.$.token}}
 
 ### Register User
