@@ -1,8 +1,11 @@
 import { Module } from '@nestjs/common';
+
+import { API } from '@pay-ms/nest-modules';
+
 import { StripeWebhookModule } from './stripe/stripe-webhook.module';
 
 @Module({
-  imports: [StripeWebhookModule],
+  imports: [API.HealthModule, StripeWebhookModule],
   controllers: [],
   providers: [],
 })

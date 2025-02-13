@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
-import { Logger, ValidationPipe } from '@nestjs/common';
 import { MicroserviceOptions } from '@nestjs/microservices';
+import { Logger, RequestMethod, ValidationPipe } from '@nestjs/common';
 
 import { Core } from '@pay-ms/nest-modules';
 
@@ -13,7 +13,16 @@ async function bootstrap() {
   });
 
   const globalPrefix = 'api';
-  app.setGlobalPrefix(globalPrefix);
+  app.setGlobalPrefix(globalPrefix, {
+    exclude: [
+      {
+        path: '',
+        method: RequestMethod.GET,
+      },
+      { path: '/health', method: RequestMethod.GET },
+      { path: '/ping', method: RequestMethod.GET },
+    ],
+  });
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -33,7 +42,7 @@ async function bootstrap() {
   await app.startAllMicroservices();
 
   await app.listen(envs.port);
-  Logger.log(`[Webhooks Microservice] ::: 🚀🚀🚀 is running`);
+  Logger.log(`![Webhooks Microservice] ::: 🚀🚀🚀 is running`);
 }
 
 bootstrap();

@@ -1,5 +1,5 @@
-import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { Logger, RequestMethod, ValidationPipe } from '@nestjs/common';
 
 import { Core } from '@pay-ms/nest-modules';
 
@@ -10,7 +10,16 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const globalPrefix = 'api';
-  app.setGlobalPrefix(globalPrefix);
+  app.setGlobalPrefix(globalPrefix, {
+    exclude: [
+      {
+        path: '',
+        method: RequestMethod.GET,
+      },
+      { path: '/health', method: RequestMethod.GET },
+      { path: '/ping', method: RequestMethod.GET },
+    ],
+  });
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -25,7 +34,7 @@ async function bootstrap() {
   await app.listen(envs.port);
 
   Logger.log(
-    `[Client Gateway] ::: 🚀🚀🚀 is running on: http://localhost:${envs.port}/${globalPrefix}`
+    `![Client Gateway] ::: 🚀🚀🚀 is running on: http://localhost:${envs.port}/${globalPrefix}`
   );
 }
 

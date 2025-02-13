@@ -25,21 +25,19 @@ spec:
               value: '3000'
             - name: NATS_SERVERS
               value: 'nats://nats'
-            - name: STRIPE_SECRET
-              secretKeyRef:
-                name: webhooks-ms
-                value: stripe_secret
-            - name: STRIPE_ENDPOINT_SECRET
-              secretKeyRef:
-                name: webhooks-ms
-                value: stripe_endpoint_secret
             - name: STRIPE_SUCCESS_URL
-              secretKeyRef:
-                name: webhooks-ms
-                value: stripe_success_url
+              value: 'http://webhooks-ms/api/stripe/success'
             - name: STRIPE_CANCEL_URL
-              secretKeyRef:
-                name: webhooks-ms
-                value: stripe_cancel_url
+              value: 'http://webhooks-ms/api/stripe/cancel'
+            - name: STRIPE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: webhooks-secrets
+                  key: stripe_secret
+            - name: STRIPE_ENDPOINT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: webhooks-secrets
+                  key: stripe_endpoint_secret
           resources: {}
 status: {}
